@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
+import MetronomeRefactor from './MetronomeRefactor.jsx';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
   return (
     <View style={styles.container}>
       <Text>Open up App.js to start working on your app!</Text>
+      <MetronomeRefactor />
+      {/* <Metronome /> */}
       <StatusBar style="auto" />
     </View>
   );
