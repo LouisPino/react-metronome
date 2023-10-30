@@ -17,7 +17,7 @@ export default function MetronomeRefactor() {
     const [ternaryRunning, setTernaryRunning] = useState(false);
     const [polyTop, setPolyTop] = useState(2);
     const [polyBottom, setPolyBottom] = useState(2);
-    const assetsPath = ""
+
     function promisedSetState(setter, newState) {
         return new Promise((resolve) => setter(newState));
     }
@@ -27,7 +27,7 @@ export default function MetronomeRefactor() {
             clearInterval(metLoop);
             clearInterval(secondaryMetLoop);
             clearInterval(ternaryMetLoop);
-            ballEl.style.animation = "none";
+            // ballEl.style.animation = "none";
             playMet();
         }
     }
@@ -37,25 +37,29 @@ export default function MetronomeRefactor() {
         clearInterval(metLoop);
         clearInterval(secondaryMetLoop);
         clearInterval(ternaryMetLoop);
-        ballEl.style.animation = "none";
+        // ballEl.style.animation = "none";
     };
 
     function oneClick(random, like, beatCount) {
         if (beatCount === 0) {
             if (random) {
                 if (Math.random() < like / 100) {
-                    clave.play();
+                    // clave.play();
+                    console.log('hit 1')
                 }
             } else {
-                clave.play();
+                // clave.play();
+                console.log('hit 1')
             }
         } else {
             if (random) {
                 if (Math.random() < like / 100) {
-                    clave2.play();
+                    // clave2.play();
+                    console.log('hit 1')
                 }
             } else {
-                clave2.play();
+                // clave2.play();
+                console.log('hit 1')
             }
         }
     }
@@ -70,7 +74,7 @@ export default function MetronomeRefactor() {
         let beatCount = 0;
         let polyCount = 0;
         setTimeout(() => {
-            ballEl.style.animation = `slide ${tempoMs * 2}ms ease-out infinite`;
+            // ballEl.style.animation = `slide ${tempoMs * 2}ms ease-out infinite`;
         }, tempoMs)
         metLoop = setInterval(function () {
             if (polyCount === 0) {
@@ -130,8 +134,8 @@ export default function MetronomeRefactor() {
         let like = likelihood;
 
         let ternaryTempoMs =
-            (60000 / tempo / polyBottom) * state.polyTop;
-        if (this.state.ternaryRunning) {
+            (60000 / tempo / polyBottom) * polyTop;
+        if (ternaryRunning) {
             clave4.play();
             ternaryMetLoop = setInterval(() => {
                 if (random) {
@@ -146,20 +150,20 @@ export default function MetronomeRefactor() {
     };
 
     const playSecondary = () => {
-        let like = this.state.likelihood;
-        let random = this.state.random;
-        let divisor = this.state.divisor;
-        let subTempoMs = 60000 / this.state.tempo / divisor;
+        let like = likelihood;
+        let subTempoMs = 60000 / tempo / divisor;
         let subCount = 0;
-        if (this.state.secondaryRunning) {
+        if (secondaryRunning) {
             secondaryMetLoop = setInterval(function () {
                 if (subCount !== divisor - 1) {
                     if (random) {
                         if (Math.random() < like / 100) {
-                            clave3.play();
+                            // clave3.play();
+                            console.log('hit 1')
                         }
                     } else {
-                        clave3.play();
+                        // clave3.play();
+                        console.log('hit 1')
                     }
                 }
                 subCount++;
