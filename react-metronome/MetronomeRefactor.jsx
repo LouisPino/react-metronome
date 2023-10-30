@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { StyleSheet, Text, View, Button, Dimensions, TouchableOpacity, TextInput, Pressable } from 'react-native';
 
 export default function MetronomeRefactor() {
@@ -17,6 +17,9 @@ export default function MetronomeRefactor() {
     const [ternaryRunning, setTernaryRunning] = useState(false);
     const [polyTop, setPolyTop] = useState(2);
     const [polyBottom, setPolyBottom] = useState(2);
+    const metLoop = useRef()
+    const secondaryMetLoop = useRef()
+    const ternaryMetLoop = useRef()
 
     function promisedSetState(setter, newState) {
         return new Promise((resolve) => setter(newState));
@@ -24,9 +27,9 @@ export default function MetronomeRefactor() {
 
     function reset() {
         if (running) {
-            clearInterval(metLoop);
-            clearInterval(secondaryMetLoop);
-            clearInterval(ternaryMetLoop);
+            clearInterval(metLoop.current);
+            clearInterval(secondaryMetLoop.current);
+            clearInterval(ternaryMetLoop.current);
             // ballEl.style.animation = "none";
             playMet();
         }
@@ -34,9 +37,9 @@ export default function MetronomeRefactor() {
 
     function stop() {
         setRunning(false)
-        clearInterval(metLoop);
-        clearInterval(secondaryMetLoop);
-        clearInterval(ternaryMetLoop);
+        clearInterval(metLoop.current);
+        clearInterval(secondaryMetLoop.current);
+        clearInterval(ternaryMetLoop.current);
         // ballEl.style.animation = "none";
     };
 
@@ -76,13 +79,13 @@ export default function MetronomeRefactor() {
         setTimeout(() => {
             // ballEl.style.animation = `slide ${tempoMs * 2}ms ease-out infinite`;
         }, tempoMs)
-        metLoop = setInterval(function () {
+        metLoop.current = setInterval(function () {
             if (polyCount === 0) {
-                clearInterval(ternaryMetLoop);
+                clearInterval(ternaryMetLoop.current);
                 playTernary();
             }
             polyCount++;
-            clearInterval(secondaryMetLoop);
+            clearInterval(secondaryMetLoop.current);
             oneClick(random, like, beatCount)
             playSecondary();
             if (beats === beatCount + 1) {
@@ -96,8 +99,9 @@ export default function MetronomeRefactor() {
 
     const tempoChange = async (newTemp) => {
         if (newTemp !== 0) {
-            await promisedSetState({ tempo: newTemp });
-            this.reset();
+            // await promisedSetState({ tempo: newTemp });
+            setTempo(newTemp)
+            reset();
         } else {
             await promisedSetState({ tempo: undefined });
         }
@@ -112,32 +116,37 @@ export default function MetronomeRefactor() {
 
 
     const startSecondary = async () => {
-        await promisedSetState({ secondaryRunning: true });
+        // await promisedSetState({ secondaryRunning: true });
+        setSecondaryRunning(true)
     };
 
     const stopSecondary = async () => {
-        await promisedSetState({ secondaryRunning: false });
-        clearInterval(secondaryMetLoop);
+        // await promisedSetState({ secondaryRunning: false });
+
+        setSecondaryRunning(false)
+        clearInterval(secondaryMetLoop.current);
     };
 
-    const startTernary = async () => {
-        await promisedSetState({ ternaryRunning: true });
+    async function startTernary() {
+        // await promisedSetState({ ternaryRunning: true });
+        setTernaryRunning(true)
         reset();
     };
 
-    const stopTernary = async () => {
-        await promisedSetState({ ternaryRunning: false });
-        clearInterval(ternaryMetLoop);
+    async function stopTernary() {
+        // await promisedSetState({ ternaryRunning: false });
+        setTernaryRunning(false)
+        clearInterval(ternaryMetLoop.current);
     };
 
-    const playTernary = () => {
+    function playTernary() {
         let like = likelihood;
 
         let ternaryTempoMs =
             (60000 / tempo / polyBottom) * polyTop;
         if (ternaryRunning) {
             clave4.play();
-            ternaryMetLoop = setInterval(() => {
+            ternaryMetLoop.current = setInterval(() => {
                 if (random) {
                     if (Math.random() < like / 100) {
                         clave4.play();
@@ -149,12 +158,12 @@ export default function MetronomeRefactor() {
         }
     };
 
-    const playSecondary = () => {
+    function playSecondary() {
         let like = likelihood;
         let subTempoMs = 60000 / tempo / divisor;
         let subCount = 0;
         if (secondaryRunning) {
-            secondaryMetLoop = setInterval(function () {
+            secondaryMetLoop.current = setInterval(function () {
                 if (subCount !== divisor - 1) {
                     if (random) {
                         if (Math.random() < like / 100) {
@@ -239,9 +248,7 @@ export default function MetronomeRefactor() {
     });
 
 
-    let metLoop;
-    let secondaryMetLoop;
-    let ternaryMetLoop;
+
 
     //cached ball element for animation
     const ballEl = document.querySelector(".met-anim-ball");
