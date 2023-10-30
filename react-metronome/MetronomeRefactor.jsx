@@ -251,7 +251,7 @@ export default function MetronomeRefactor() {
 
 
     //cached ball element for animation
-    const ballEl = document.querySelector(".met-anim-ball");
+    // const ballEl = document.querySelector(".met-anim-ball");
 
     //Howler audio vars
     // var clave = new Howl({ src: [assetsPath + "clave.wav"] });
@@ -403,7 +403,8 @@ export default function MetronomeRefactor() {
             {/* 
             <TouchableOpacity style={styles.button} onPress={tapTempo}>
                 <Text>Tap Tempo</Text>
-            </TouchableOpacity> */} <View></View>
+            </TouchableOpacity> */}
+            {/* <View></View> */}
 
         </View>
     )
