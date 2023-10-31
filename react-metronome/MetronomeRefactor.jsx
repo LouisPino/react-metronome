@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, Button, Dimensions, TouchableOpacity, TextInput, Pressable, Image, Keyboard } from 'react-native';
 import { Audio } from 'expo-av';
+import Expo from 'expo'
 import Divisions from './divisions.js';
 export default function MetronomeRefactor() {
     const divisionImgs = Divisions
-    Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+    Audio.setAudioModeAsync({
+        playsInSilentModeIOS: true,
+    });
     const [tempo, setTempo] = useState(120)
     const [running, setRunning] = useState(false)
     const [timeSinceTap, setTimeSinceTap] = useState(0);
@@ -36,7 +39,7 @@ export default function MetronomeRefactor() {
 
     useEffect(() => {
         reset()
-    }, [random, tempo, likelihood])
+    }, [random, tempo, likelihood, secondaryRunning, ternaryRunning])
 
     function reset() {
         if (running) {
@@ -60,39 +63,37 @@ export default function MetronomeRefactor() {
     const [sound1, setSound1] = useState(null)
     const [sound2, setSound2] = useState(null)
     const [sound3, setSound3] = useState(null)
+    const [sound4, setSound4] = useState(null)
 
     useEffect(() => {
         async function loadSounds() {
             const sound1 = await Audio.Sound.createAsync(require('./assets/clave.wav'))
             const sound2 = await Audio.Sound.createAsync(require('./assets/clave2.wav'))
             const sound3 = await Audio.Sound.createAsync(require('./assets/clave3.wav'))
+            const sound4 = await Audio.Sound.createAsync(require('./assets/clave4.wav'))
             setSound1(sound1.sound);
             setSound2(sound2.sound);
             setSound3(sound3.sound);
+            setSound4(sound4.sound);
         }
         loadSounds()
     }, [])
 
     async function playSound1() {
-        // const { sound } = await Audio.Sound.createAsync(require('./assets/clave.wav')
-        // );
-        // setSound(sound);
-        sound1.playAsync();
+        sound1.replayAsync();
     }
     async function playSound2() {
-        // const { sound2 } = await Audio.Sound.createAsync(require('./assets/clave2.wav')
-        // );
-        // setSound(sound2);
-        sound2.playAsync();
+        sound2.replayAsync();
     }
     async function playSound3() {
-        //     const { sound3 } = await Audio.Sound.createAsync(require('./assets/clave3.wav')
-        // );
-        // setSound(sound3);
-        sound3.playAsync();
+        sound3.replayAsync();
+    }
+    async function playSound4() {
+        sound4.replayAsync();
     }
 
     async function oneClick(random, like, beatCount) {
+        console.log('hit')
         if (beatCount === 0) {
             if (random) {
                 if (Math.random() < like / 100) {
@@ -246,7 +247,7 @@ export default function MetronomeRefactor() {
         clearInterval(ternaryMetLoop.current);
     };
 
-    function playTernary() {
+    async function playTernary() {
         let like = likelihood;
 
         let ternaryTempoMs =
@@ -293,7 +294,7 @@ export default function MetronomeRefactor() {
         },
         animationContainer: {
             borderRadius: "10px",
-            height: "20px",
+            height: 20,
             width: "90%",
             position: "relative",
             backgroundColor: "white"
@@ -302,8 +303,8 @@ export default function MetronomeRefactor() {
             position: "absolute",
             backgroundColor: "black",
             borderRadius: "50%",
-            width: "20px",
-            height: "20px"
+            width: 20,
+            height: 20
         },
         button: {
             padding: 10,
@@ -377,10 +378,7 @@ export default function MetronomeRefactor() {
             )}
 
 
-            {Dimensions.get('window').width < 450 && (
-                <Text>Phone must be off silent mode!</Text>
 
-            )}
 
 
             <View style={styles.fieldContainer}>
@@ -391,6 +389,9 @@ export default function MetronomeRefactor() {
                     onChangeText={(text) => tempoChange(Number(text))}
                     inputMode="numeric"
                 />
+                <Pressable style={styles.button} onPress={playSound1}>
+                    <Text>  PLAY SOUND</Text>
+                </Pressable>
             </View>
 
             <View style={styles.buttonContainer}>
