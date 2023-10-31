@@ -1,7 +1,6 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, Button, Dimensions, TouchableOpacity, TextInput, Pressable } from 'react-native';
 import { Audio } from 'expo-av';
-
 
 export default function MetronomeRefactor() {
     Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
@@ -28,6 +27,9 @@ export default function MetronomeRefactor() {
         return new Promise((resolve) => setter(newState));
     }
 
+    useEffect(() => {
+        reset()
+    }, [random, tempo, likelihood])
 
     function reset() {
         if (running) {
@@ -128,9 +130,9 @@ export default function MetronomeRefactor() {
             setTempo(newTemp)
             reset();
         }
-        // else {
-        //     await promisedSetState({ setTempo, tempo: undefined });
-        // }
+        else {
+            await promisedSetState({ setTempo, undefined });
+        }
     };
 
     const tempoIncrement = (int) => {
@@ -163,6 +165,48 @@ export default function MetronomeRefactor() {
             if (avg) {
                 return 60000 / avg;
             }
+        }
+    };
+
+    async function likelihoodChange(like) {
+        let random = random;
+        let newLike = like;
+        if (newLike <= 100 && newLike >= 0) {
+            await promisedSetState(setLikelihood, newLike);
+        }
+        if (random) {
+            reset();
+        }
+    };
+
+    async function randomToggle(x) {
+        let newRandom = x;
+        await promisedSetState(setRandom, !!newRandom);
+        reset();
+    };
+
+    async function beatChange(beats) {
+        if (beats >= 1 && beats <= 16) {
+            await promisedSetState(setBeats, beats);
+        }
+    };
+
+    async function divisorChange(div) {
+        await promisedSetState(setDivisor, div);
+    };
+
+
+    async function polyTopChange(int) {
+        await promisedSetState(setPolyTop, int);
+        if (ternaryRunning) {
+            reset();
+        }
+    };
+
+    async function polyBottomChange(int) {
+        await promisedSetState(setPolyBottom, int);
+        if (ternaryRunning) {
+            reset();
         }
     };
 
