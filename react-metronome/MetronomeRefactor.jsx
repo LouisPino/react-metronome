@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View, Button, Dimensions, TouchableOpacity, TextInput, Pressable, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, Dimensions, TouchableOpacity, TextInput, Pressable, Image, Keyboard } from 'react-native';
 import { Audio } from 'expo-av';
 import Divisions from './divisions.js';
-
 export default function MetronomeRefactor() {
     const divisionImgs = Divisions
     Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
@@ -58,29 +57,39 @@ export default function MetronomeRefactor() {
     };
 
 
+    const [sound1, setSound1] = useState(null)
+    const [sound2, setSound2] = useState(null)
+    const [sound3, setSound3] = useState(null)
 
-
-    const [sound, setSound] = useState(null)
-    const [sound2, setSound3] = useState(null)
-    const [sound3, setSound2] = useState(null)
+    useEffect(() => {
+        async function loadSounds() {
+            const sound1 = await Audio.Sound.createAsync(require('./assets/clave.wav'))
+            const sound2 = await Audio.Sound.createAsync(require('./assets/clave2.wav'))
+            const sound3 = await Audio.Sound.createAsync(require('./assets/clave3.wav'))
+            setSound1(sound1.sound);
+            setSound2(sound2.sound);
+            setSound3(sound3.sound);
+        }
+        loadSounds()
+    }, [])
 
     async function playSound1() {
-        const { sound } = await Audio.Sound.createAsync(require('./assets/clave.wav')
-        );
-        setSound(sound);
-        await sound.playAsync();
+        // const { sound } = await Audio.Sound.createAsync(require('./assets/clave.wav')
+        // );
+        // setSound(sound);
+        sound1.playAsync();
     }
     async function playSound2() {
-        const { sound2 } = await Audio.Sound.createAsync(require('./assets/clave2.wav')
-        );
-        setSound(sound2);
-        await sound.playAsync();
+        // const { sound2 } = await Audio.Sound.createAsync(require('./assets/clave2.wav')
+        // );
+        // setSound(sound2);
+        sound2.playAsync();
     }
     async function playSound3() {
-        const { sound3 } = await Audio.Sound.createAsync(require('./assets/clave3.wav')
-        );
-        setSound(sound3);
-        await sound3.playAsync();
+        //     const { sound3 } = await Audio.Sound.createAsync(require('./assets/clave3.wav')
+        // );
+        // setSound(sound3);
+        sound3.playAsync();
     }
 
     async function oneClick(random, like, beatCount) {
@@ -243,14 +252,14 @@ export default function MetronomeRefactor() {
         let ternaryTempoMs =
             (60000 / tempo / polyBottom) * polyTop;
         if (ternaryRunning) {
-            clave4.play();
+            playSound3()
             ternaryMetLoop.current = setInterval(() => {
                 if (random) {
                     if (Math.random() < like / 100) {
-                        clave4.play();
+                        playSound3()
                     }
                 } else {
-                    clave4.play();
+                    playSound3()
                 }
             }, ternaryTempoMs);
         }
@@ -352,9 +361,9 @@ export default function MetronomeRefactor() {
     });
 
     return (
-        <View style={styles.container} >
+        <View style={styles.container} onPress={Keyboard.dismiss}>
             <View style={styles.animationContainer}>
-                <View style={styles.animationBall} ref={ballRef} />
+                <View style={styles.animationBall} ref={ballRef} onPress={Keyboard.dismiss} />
             </View>
 
             {running ? (
@@ -389,7 +398,7 @@ export default function MetronomeRefactor() {
                     <Pressable
                         key={index}
                         style={styles.button}
-                        onPress={() => tempoIncrement(value)}
+                        onPress={() => { tempoIncrement(value); Keyboard.dismiss() }}
                     >
                         <Text>{value >= 0 ? `+${value}` : value}</Text>
                     </Pressable>
