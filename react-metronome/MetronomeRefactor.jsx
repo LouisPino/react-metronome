@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View, Button, Dimensions, TouchableOpacity, TextInput, Pressable, Image, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Pressable, Image, Keyboard } from 'react-native';
 import { Audio } from 'expo-av';
 import Divisions from './divisions.js';
 export default function MetronomeRefactor() {
@@ -372,10 +372,6 @@ export default function MetronomeRefactor() {
                     <Text>Start</Text>
                 </Pressable>
             )}
-
-
-
-
 
             <View style={styles.fieldContainer}>
                 <Text>Tempo</Text>
