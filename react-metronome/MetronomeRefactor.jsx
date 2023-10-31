@@ -141,6 +141,31 @@ export default function MetronomeRefactor() {
     };
 
 
+    function tapTempo() {
+        let lastTime = tapTime;
+        let time = Date.now();
+        setTimeSinceTap(time - lastTime)
+        setTapTime(time)
+        let newTemp = getAverageTime();
+        if (typeof newTemp === "number") {
+            tempoChange(Math.floor(newTemp));
+        }
+    };
+    function getAverageTime() {
+        if (timeSinceTap > 3000) {
+            setTapCount(0)
+            setTapTimeTotal(0)
+        } else {
+
+            setTapCount(prevCount => prevCount + 1)
+            setTapTimeTotal(prevTime => prevTime + timeSinceTap)
+            let avg = tapTimeTotal / tapCount;
+            if (avg) {
+                return 60000 / avg;
+            }
+        }
+    };
+
     const startSecondary = async () => {
         // await promisedSetState({ secondaryRunning: true });
         setSecondaryRunning(true)
@@ -426,10 +451,10 @@ export default function MetronomeRefactor() {
             )}
 
             <View style={styles.separator} />
-            {/* 
+
             <TouchableOpacity style={styles.button} onPress={tapTempo}>
                 <Text>Tap Tempo</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             {/* <View></View> */}
 
         </View>
