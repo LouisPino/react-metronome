@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, Button, Dimensions, TouchableOpacity, TextInput, Pressable, Image, Keyboard } from 'react-native';
 import { Audio } from 'expo-av';
-import WebAudio from "react-native-web-audio"
+import Audio2 from 'react-native-audio-polyfill'
 import Divisions from './divisions.js';
+import clave1 from "./assets/clave.wav"
+import clave2 from "./assets/clave2.wav"
+import clave3 from "./assets/clave3.wav"
+import clave4 from "./assets/clave4.wav"
 export default function MetronomeRefactor() {
-    const WebAudio = WebAudio
+
     const divisionImgs = Divisions
     Audio.setAudioModeAsync({
         playsInSilentModeIOS: true,
@@ -33,10 +37,23 @@ export default function MetronomeRefactor() {
         return new Promise((resolve) => setter(newState));
     }
 
-    useEffect(() => {
-        const ballEl = ballRef.current
-        console.log(ballEl)
-    }, [])
+    const audio1 = new Audio2()
+    audio1.src = clave1
+    audio1.load()
+
+    const audio2 = new Audio2()
+    audio2.src = clave2
+    audio2.load()
+
+    const audio3 = new Audio2()
+    audio3.src = clave3
+    audio3.load()
+
+    const audio4 = new Audio2()
+    audio4.src = clave4
+    audio4.load()
+
+
 
     useEffect(() => {
         reset()
@@ -60,42 +77,21 @@ export default function MetronomeRefactor() {
         // ballEl.style.animation = "none";
     };
 
-
-    const [sound1, setSound1] = useState(null)
-    const [sound2, setSound2] = useState(null)
-    const [sound3, setSound3] = useState(null)
-    const [sound4, setSound4] = useState(null)
-
-    useEffect(() => {
-        async function loadSounds() {
-            const sound1 = await Audio.Sound.createAsync(require('./assets/clave.wav'))
-            const sound2 = await Audio.Sound.createAsync(require('./assets/clave2.wav'))
-            const sound3 = await Audio.Sound.createAsync(require('./assets/clave3.wav'))
-            const sound4 = await Audio.Sound.createAsync(require('./assets/clave4.wav'))
-            setSound1(sound1.sound);
-            setSound2(sound2.sound);
-            setSound3(sound3.sound);
-            setSound4(sound4.sound);
-        }
-        loadSounds()
-    }, [])
-
     async function playSound1() {
-
-        sound1.replayAsync();
+        audio1.play()
     }
     async function playSound2() {
-        sound2.replayAsync();
+        audio2.play()
     }
     async function playSound3() {
-        sound3.replayAsync();
+        audio3.play()
+
     }
     async function playSound4() {
-        sound4.replayAsync();
+        audio4.play()
     }
 
     async function oneClick(random, like, beatCount) {
-        console.log('hit')
         if (beatCount === 0) {
             if (random) {
                 if (Math.random() < like / 100) {
@@ -269,6 +265,7 @@ export default function MetronomeRefactor() {
     };
 
     function playSecondary() {
+
         let like = likelihood;
         let subTempoMs = 60000 / tempo / divisor;
         let subCount = 0;
