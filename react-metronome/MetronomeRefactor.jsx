@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, Button, Dimensions, TouchableOpacity, TextInput, Pressable, Image } from 'react-native';
 import { Audio } from 'expo-av';
+import Divisions from './divisions.js';
+
 export default function MetronomeRefactor() {
+    const divisionImgs = Divisions
     Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
     const [tempo, setTempo] = useState(120)
     const [running, setRunning] = useState(false)
@@ -148,7 +151,7 @@ export default function MetronomeRefactor() {
     };
 
 
-    function tapTempo() {
+    async function tapTempo() {
         let lastTime = tapTime;
         let time = Date.now();
         setTimeSinceTap(time - lastTime)
@@ -411,7 +414,7 @@ export default function MetronomeRefactor() {
 
                 <View style={styles.subdivContainer}>
                     <Text>Subdivisions</Text>
-                    <Image style={styles.subdivImage} source={require(`./assets/${divisor}.png`)} />
+                    <Image style={styles.subdivImage} source={divisor >= 2 && divisor <= 8 ? divisionImgs[divisor - 2].src : divisionImgs[0].src} />
                     <TextInput
                         style={styles.input}
                         value={divisor.toString()}
