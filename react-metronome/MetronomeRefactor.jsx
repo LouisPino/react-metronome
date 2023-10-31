@@ -125,12 +125,12 @@ export default function MetronomeRefactor() {
 
     const tempoChange = async (newTemp) => {
         if (newTemp !== 0) {
-            // await promisedSetState({ tempo: newTemp });
             setTempo(newTemp)
             reset();
-        } else {
-            await promisedSetState({ tempo: undefined });
         }
+        // else {
+        //     await promisedSetState({ setTempo, tempo: undefined });
+        // }
     };
 
     const tempoIncrement = (int) => {
@@ -167,25 +167,20 @@ export default function MetronomeRefactor() {
     };
 
     const startSecondary = async () => {
-        // await promisedSetState({ secondaryRunning: true });
         setSecondaryRunning(true)
     };
 
     const stopSecondary = async () => {
-        // await promisedSetState({ secondaryRunning: false });
-
         setSecondaryRunning(false)
         clearInterval(secondaryMetLoop.current);
     };
 
     async function startTernary() {
-        // await promisedSetState({ ternaryRunning: true });
         setTernaryRunning(true)
         reset();
     };
 
     async function stopTernary() {
-        // await promisedSetState({ ternaryRunning: false });
         setTernaryRunning(false)
         clearInterval(ternaryMetLoop.current);
     };
