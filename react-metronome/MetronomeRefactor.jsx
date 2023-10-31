@@ -21,10 +21,16 @@ export default function MetronomeRefactor() {
     const metLoop = useRef()
     const secondaryMetLoop = useRef()
     const ternaryMetLoop = useRef()
+    const ballRef = useRef()
 
     function promisedSetState(setter, newState) {
         return new Promise((resolve) => setter(newState));
     }
+
+    useEffect(() => {
+        const ballEl = ballRef.current
+        console.log(ballEl)
+    }, [])
 
     useEffect(() => {
         reset()
@@ -103,9 +109,9 @@ export default function MetronomeRefactor() {
         let tempoMs = 60000 / tempo;
         let beatCount = 0;
         let polyCount = 0;
-        setTimeout(() => {
-            // ballEl.style.animation = `slide ${tempoMs * 2}ms ease-out infinite`;
-        }, tempoMs)
+        // setTimeout(() => {
+        //     ballEl.style.animation = `slide ${tempoMs * 2}ms ease-out infinite`;
+        // }, tempoMs)
         metLoop.current = setInterval(function () {
             if (polyCount === 0) {
                 clearInterval(ternaryMetLoop.current);
@@ -270,13 +276,22 @@ export default function MetronomeRefactor() {
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            padding: 15
+            padding: 15,
+            marginTop: 100
         },
         animationContainer: {
-            // ... 
+            borderRadius: "10px",
+            height: "20px",
+            width: "90%",
+            position: "relative",
+            backgroundColor: "white"
         },
         animationBall: {
-            // ...
+            position: "absolute",
+            backgroundColor: "black",
+            borderRadius: "50%",
+            width: "20px",
+            height: "20px"
         },
         button: {
             padding: 10,
@@ -333,17 +348,10 @@ export default function MetronomeRefactor() {
         }
     });
 
-
-
-
-    //cached ball element for animation
-    // const ballEl = document.querySelector(".met-anim-ball");
-
-
     return (
-        <View style={styles.container}>
+        <View style={styles.container} >
             <View style={styles.animationContainer}>
-                <View style={styles.animationBall} />
+                <View style={styles.animationBall} ref={ballRef} />
             </View>
 
             {running ? (
@@ -445,10 +453,9 @@ export default function MetronomeRefactor() {
                         min="2"
                     />
                     {!ternaryRunning ? (
-                        // <Pressable style={styles.button} onPress={this.startTernary}>
-                        //     <Text>Turn Polyrhythms On</Text>
-                        // </Pressable>
-                        <View></View>
+                        <Pressable style={styles.button} onPress={startTernary}>
+                            <Text>Turn Polyrhythms On</Text>
+                        </Pressable>
                     ) : (
                         <Pressable style={styles.button} onPress={stopTernary}>
                             <Text>Turn Polyrhythms Off</Text>
