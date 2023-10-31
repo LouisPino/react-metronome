@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react';
 import { StyleSheet, Text, View, Button, Dimensions, TouchableOpacity, TextInput, Pressable } from 'react-native';
+import { Audio } from 'expo-av';
+
 
 export default function MetronomeRefactor() {
     const [tempo, setTempo] = useState(120)

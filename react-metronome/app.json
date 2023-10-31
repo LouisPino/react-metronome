@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "rect-metronome",
-    "slug": "reaact-metronome",
+    "name": "react-metronome",
+    "slug": "react-metronome",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
