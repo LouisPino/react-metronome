@@ -1,12 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, Button, Dimensions, TouchableOpacity, TextInput, Pressable, Image, Keyboard } from 'react-native';
 import { Audio } from 'expo-av';
-import Audio2 from 'react-native-audio-polyfill'
 import Divisions from './divisions.js';
-import clave1 from "./assets/clave.wav"
-import clave2 from "./assets/clave2.wav"
-import clave3 from "./assets/clave3.wav"
-import clave4 from "./assets/clave4.wav"
 export default function MetronomeRefactor() {
 
     const divisionImgs = Divisions
@@ -24,7 +19,6 @@ export default function MetronomeRefactor() {
     const [beats, setBeats] = useState(1);
     const [divisor, setDivisor] = useState(2);
     const [secondaryRunning, setSecondaryRunning] = useState(false);
-    const [subs, setSubs] = useState(0);
     const [ternaryRunning, setTernaryRunning] = useState(false);
     const [polyTop, setPolyTop] = useState(2);
     const [polyBottom, setPolyBottom] = useState(2);
@@ -36,22 +30,6 @@ export default function MetronomeRefactor() {
     function promisedSetState(setter, newState) {
         return new Promise((resolve) => setter(newState));
     }
-
-    const audio1 = new Audio2()
-    audio1.src = clave1
-    audio1.load()
-
-    const audio2 = new Audio2()
-    audio2.src = clave2
-    audio2.load()
-
-    const audio3 = new Audio2()
-    audio3.src = clave3
-    audio3.load()
-
-    const audio4 = new Audio2()
-    audio4.src = clave4
-    audio4.load()
 
 
 
@@ -77,18 +55,37 @@ export default function MetronomeRefactor() {
         // ballEl.style.animation = "none";
     };
 
+
+    const [sound1, setSound1] = useState(null)
+    const [sound2, setSound2] = useState(null)
+    const [sound3, setSound3] = useState(null)
+    const [sound4, setSound4] = useState(null)
+
+    useEffect(() => {
+        async function loadSounds() {
+            const sound1 = await Audio.Sound.createAsync(require('./assets/clave.wav'))
+            const sound2 = await Audio.Sound.createAsync(require('./assets/clave2.wav'))
+            const sound3 = await Audio.Sound.createAsync(require('./assets/clave3.wav'))
+            const sound4 = await Audio.Sound.createAsync(require('./assets/clave4.wav'))
+            setSound1(sound1.sound);
+            setSound2(sound2.sound);
+            setSound3(sound3.sound);
+            setSound4(sound4.sound);
+        }
+        loadSounds()
+    }, [])
+
     async function playSound1() {
-        audio1.play()
+        sound1.replayAsync();
     }
     async function playSound2() {
-        audio2.play()
+        sound2.replayAsync();
     }
     async function playSound3() {
-        audio3.play()
-
+        sound3.replayAsync();
     }
     async function playSound4() {
-        audio4.play()
+        sound4.replayAsync();
     }
 
     async function oneClick(random, like, beatCount) {
