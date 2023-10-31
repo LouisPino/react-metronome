@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View, Button, Dimensions, TouchableOpacity, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Button, Dimensions, TouchableOpacity, TextInput, Pressable, Image } from 'react-native';
 import { Audio } from 'expo-av';
-
 export default function MetronomeRefactor() {
     Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
     const [tempo, setTempo] = useState(120)
@@ -66,7 +65,7 @@ export default function MetronomeRefactor() {
         const { sound2 } = await Audio.Sound.createAsync(require('./assets/clave2.wav')
         );
         setSound(sound2);
-        await sound2.playAsync();
+        await sound.playAsync();
     }
     async function playSound3() {
         const { sound3 } = await Audio.Sound.createAsync(require('./assets/clave3.wav')
@@ -257,12 +256,10 @@ export default function MetronomeRefactor() {
                 if (subCount !== divisor - 1) {
                     if (random) {
                         if (Math.random() < like / 100) {
-                            // clave3.play();
-                            console.log('hit 1')
+                            playSound2()
                         }
                     } else {
-                        // clave3.play();
-                        console.log('hit 1')
+                        playSound2()
                     }
                 }
                 subCount++;
@@ -334,7 +331,6 @@ export default function MetronomeRefactor() {
             flexDirection: 'row',
             alignItems: 'center'
         }
-        // ... other styles ...
     });
 
 
@@ -342,13 +338,6 @@ export default function MetronomeRefactor() {
 
     //cached ball element for animation
     // const ballEl = document.querySelector(".met-anim-ball");
-
-    //Howler audio vars
-    // var clave = new Howl({ src: [assetsPath + "clave.wav"] });
-    // var clave2 = new Howl({ src: [assetsPath + "clave2.wav"] });
-    // var clave3 = new Howl({ src: [assetsPath + "clave3.wav"] });
-    // var clave4 = new Howl({ src: [assetsPath + "clave4.wav"] });
-
 
 
     return (
@@ -414,7 +403,7 @@ export default function MetronomeRefactor() {
 
                 <View style={styles.subdivContainer}>
                     <Text>Subdivisions</Text>
-                    {/* <Image style={styles.subdivImage} source={{ uri: `${assetsPath}${divisor}.png` }} /> */}
+                    <Image style={styles.subdivImage} source={require(`./assets/${divisor}.png`)} />
                     <TextInput
                         style={styles.input}
                         value={divisor.toString()}
@@ -424,10 +413,10 @@ export default function MetronomeRefactor() {
                         min="2"
                     />
                     {!secondaryRunning ? (
-                        // <TouchableOpacity style={styles.button} onPress={this.startSecondary}>
-                        //     <Text>Turn Subdivisions On</Text>
-                        // </TouchableOpacity>
-                        <View></View>) : (
+                        <Pressable style={styles.button} onPress={startSecondary}>
+                            <Text>Turn Subdivisions On</Text>
+                        </Pressable>
+                    ) : (
                         <Pressable style={styles.button} onPress={stopSecondary}>
                             <Text>Turn Subdivisions Off</Text>
                         </Pressable>
@@ -456,9 +445,9 @@ export default function MetronomeRefactor() {
                         min="2"
                     />
                     {!ternaryRunning ? (
-                        // <TouchableOpacity style={styles.button} onPress={this.startTernary}>
+                        // <Pressable style={styles.button} onPress={this.startTernary}>
                         //     <Text>Turn Polyrhythms On</Text>
-                        // </TouchableOpacity>
+                        // </Pressable>
                         <View></View>
                     ) : (
                         <Pressable style={styles.button} onPress={stopTernary}>
@@ -491,11 +480,9 @@ export default function MetronomeRefactor() {
 
             <View style={styles.separator} />
 
-            <TouchableOpacity style={styles.button} onPress={tapTempo}>
+            <Pressable style={styles.button} onPress={tapTempo}>
                 <Text>Tap Tempo</Text>
-            </TouchableOpacity>
-            {/* <View></View> */}
-
+            </Pressable>
         </View>
     )
 }
