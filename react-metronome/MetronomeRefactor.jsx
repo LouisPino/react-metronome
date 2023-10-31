@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, Button, Dimensions, TouchableOpacity, TextInput, Pressable, Image, Keyboard } from 'react-native';
 import { Audio } from 'expo-av';
-import Expo from 'expo'
+import WebAudio from "react-native-web-audio"
 import Divisions from './divisions.js';
 export default function MetronomeRefactor() {
+    const WebAudio = WebAudio
     const divisionImgs = Divisions
     Audio.setAudioModeAsync({
         playsInSilentModeIOS: true,
@@ -80,6 +81,7 @@ export default function MetronomeRefactor() {
     }, [])
 
     async function playSound1() {
+
         sound1.replayAsync();
     }
     async function playSound2() {
