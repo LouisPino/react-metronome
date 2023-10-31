@@ -4,6 +4,7 @@ import { Audio } from 'expo-av';
 
 
 export default function MetronomeRefactor() {
+    Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
     const [tempo, setTempo] = useState(120)
     const [running, setRunning] = useState(false)
     const [timeSinceTap, setTimeSinceTap] = useState(0);
@@ -27,6 +28,7 @@ export default function MetronomeRefactor() {
         return new Promise((resolve) => setter(newState));
     }
 
+
     function reset() {
         if (running) {
             clearInterval(metLoop.current);
@@ -45,26 +47,48 @@ export default function MetronomeRefactor() {
         // ballEl.style.animation = "none";
     };
 
-    function oneClick(random, like, beatCount) {
+
+
+
+    const [sound, setSound] = useState(null)
+    const [sound2, setSound3] = useState(null)
+    const [sound3, setSound2] = useState(null)
+
+    async function playSound1() {
+        const { sound } = await Audio.Sound.createAsync(require('./assets/clave.wav')
+        );
+        setSound(sound);
+        await sound.playAsync();
+    }
+    async function playSound2() {
+        const { sound2 } = await Audio.Sound.createAsync(require('./assets/clave2.wav')
+        );
+        setSound(sound2);
+        await sound2.playAsync();
+    }
+    async function playSound3() {
+        const { sound3 } = await Audio.Sound.createAsync(require('./assets/clave3.wav')
+        );
+        setSound(sound3);
+        await sound3.playAsync();
+    }
+
+    async function oneClick(random, like, beatCount) {
         if (beatCount === 0) {
             if (random) {
                 if (Math.random() < like / 100) {
-                    // clave.play();
-                    console.log('hit 1')
+                    playSound1()
                 }
             } else {
-                // clave.play();
-                console.log('hit 1')
+                playSound1()
             }
         } else {
             if (random) {
                 if (Math.random() < like / 100) {
-                    // clave2.play();
-                    console.log('hit 1')
+                    playSound2()
                 }
             } else {
-                // clave2.play();
-                console.log('hit 1')
+                playSound2()
             }
         }
     }
