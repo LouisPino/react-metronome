@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable, Image, Keyboard } from 'react-native';
 import { Audio } from 'expo-av';
 import Divisions from './divisions.js';
+import { useTimer } from 'react-use-precision-timer';
+
 export default function MetronomeRefactor() {
     Audio.setAudioModeAsync({
         playsInSilentModeIOS: true,
     });
 
-    const [tempo, setTempo] = useState(200)
+    const [tempo, setTempo] = useState(120)
     const [running, setRunning] = useState(false)
     const [timeSinceTap, setTimeSinceTap] = useState(0);
     const [tapTime, setTapTime] = useState(0);
@@ -27,6 +29,7 @@ export default function MetronomeRefactor() {
     const ballRef = useRef()
 
 
+    const timer = useTimer({ delay: 60000 / tempo }, playSound1);
     const [sound1, setSound1] = useState(null)
     const [sound2, setSound2] = useState(null)
     const [sound3, setSound3] = useState(null)
@@ -44,6 +47,7 @@ export default function MetronomeRefactor() {
             setSound4(sound4.sound);
         }
         loadSounds()
+        timer.start();
     }, [])
 
 
@@ -381,7 +385,7 @@ export default function MetronomeRefactor() {
                     onChangeText={(text) => tempoChange(Number(text))}
                     inputMode="numeric"
                 />
-                <Pressable style={styles.button} onPress={playSound}>
+                <Pressable style={styles.button} onPress={playSound1}>
                     <Text>  PLAY SOUND</Text>
                 </Pressable>
             </View>
