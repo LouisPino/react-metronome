@@ -3,12 +3,11 @@ import { StyleSheet, Text, View, TextInput, Pressable, Image, Keyboard } from 'r
 import { Audio } from 'expo-av';
 import Divisions from './divisions.js';
 export default function MetronomeRefactor() {
-
-    const divisionImgs = Divisions
     Audio.setAudioModeAsync({
         playsInSilentModeIOS: true,
     });
-    const [tempo, setTempo] = useState(120)
+
+    const [tempo, setTempo] = useState(200)
     const [running, setRunning] = useState(false)
     const [timeSinceTap, setTimeSinceTap] = useState(0);
     const [tapTime, setTapTime] = useState(0);
@@ -26,34 +25,6 @@ export default function MetronomeRefactor() {
     const secondaryMetLoop = useRef()
     const ternaryMetLoop = useRef()
     const ballRef = useRef()
-
-    function promisedSetState(setter, newState) {
-        return new Promise((resolve) => setter(newState));
-    }
-
-
-
-    useEffect(() => {
-        reset()
-    }, [random, tempo, likelihood, secondaryRunning, ternaryRunning])
-
-    function reset() {
-        if (running) {
-            clearInterval(metLoop.current);
-            clearInterval(secondaryMetLoop.current);
-            clearInterval(ternaryMetLoop.current);
-            // ballEl.style.animation = "none";
-            playMet();
-        }
-    }
-
-    function stop() {
-        setRunning(false)
-        clearInterval(metLoop.current);
-        clearInterval(secondaryMetLoop.current);
-        clearInterval(ternaryMetLoop.current);
-        // ballEl.style.animation = "none";
-    };
 
 
     const [sound1, setSound1] = useState(null)
@@ -75,6 +46,8 @@ export default function MetronomeRefactor() {
         loadSounds()
     }, [])
 
+
+
     async function playSound1() {
         sound1.replayAsync();
     }
@@ -87,6 +60,33 @@ export default function MetronomeRefactor() {
     async function playSound4() {
         sound4.replayAsync();
     }
+
+    function promisedSetState(setter, newState) {
+        return new Promise((resolve) => setter(newState));
+    }
+
+    useEffect(() => {
+        reset()
+    }, [random, tempo, likelihood, secondaryRunning, ternaryRunning])
+
+
+    function reset() {
+        if (running) {
+            clearInterval(metLoop.current);
+            clearInterval(secondaryMetLoop.current);
+            clearInterval(ternaryMetLoop.current);
+            // ballEl.style.animation = "none";
+            playMet();
+        }
+    }
+
+    function stop() {
+        setRunning(false)
+        clearInterval(metLoop.current);
+        clearInterval(secondaryMetLoop.current);
+        clearInterval(ternaryMetLoop.current);
+        // ballEl.style.animation = "none";
+    };
 
     async function oneClick(random, like, beatCount) {
         if (beatCount === 0) {
@@ -381,7 +381,7 @@ export default function MetronomeRefactor() {
                     onChangeText={(text) => tempoChange(Number(text))}
                     inputMode="numeric"
                 />
-                <Pressable style={styles.button} onPress={playSound1}>
+                <Pressable style={styles.button} onPress={playSound}>
                     <Text>  PLAY SOUND</Text>
                 </Pressable>
             </View>
@@ -416,7 +416,7 @@ export default function MetronomeRefactor() {
 
                 <View style={styles.subdivContainer}>
                     <Text>Subdivisions</Text>
-                    <Image style={styles.subdivImage} source={divisor >= 2 && divisor <= 8 ? divisionImgs[divisor - 2].src : divisionImgs[0].src} />
+                    <Image style={styles.subdivImage} source={divisor >= 2 && divisor <= 8 ? Divisions[divisor - 2].src : Divisions[0].src} />
                     <TextInput
                         style={styles.input}
                         value={divisor.toString()}
